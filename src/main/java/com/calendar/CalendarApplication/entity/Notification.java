@@ -8,26 +8,22 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "notifications")
+@Getter
+@Setter
 public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Getter
-    @Setter
     @ManyToOne(targetEntity = Event.class)
     @JoinColumn(referencedColumnName = "id")
     private Event eventId;
 
-    @Getter
-    @Setter
     @ManyToOne(targetEntity = User.class)
     @JoinColumn(referencedColumnName = "id")
     private User userId;
 
-    @Getter
-    @Setter
     @Column(name = "has_seen", nullable = false)
     private boolean hasSeen;
 

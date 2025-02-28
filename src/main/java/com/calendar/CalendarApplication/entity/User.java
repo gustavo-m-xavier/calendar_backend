@@ -15,31 +15,23 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
 public class User {
 
-    @Setter
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Setter
-    @Getter
     @Column(name = "username", nullable = false)
     private String username;
 
-    @Setter
-    @Getter
     @Column(name="email", nullable = false)
     private String email;
 
-    @Setter
-    @Getter
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Getter
-    @Setter
     @Column(name = "birth_date")
     private Date birthDate;
 

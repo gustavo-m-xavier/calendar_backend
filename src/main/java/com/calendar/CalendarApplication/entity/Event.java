@@ -9,30 +9,24 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "events")
+@Getter
+@Setter
 public class Event {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Getter
-    @Setter
     @ManyToOne(targetEntity = User.class)
     @JoinColumn(referencedColumnName = "id")
     private User user;
 
-    @Getter
-    @Setter
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Getter
-    @Setter
     @Column(name = "description")
     private String description;
 
-    @Getter
-    @Setter
     @Column(name = "date", nullable = false)
     private Date date;
 
