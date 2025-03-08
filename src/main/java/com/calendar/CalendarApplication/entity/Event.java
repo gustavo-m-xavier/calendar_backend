@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
-import java.util.UUID;
 
 @Entity
 @Table(name = "events")
@@ -14,8 +13,8 @@ import java.util.UUID;
 public class Event {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
 
     @ManyToOne(targetEntity = User.class)
     @JoinColumn(referencedColumnName = "id")

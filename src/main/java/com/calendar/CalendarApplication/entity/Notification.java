@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.UUID;
-
 @Entity
 @Table(name = "notifications")
 @Getter
@@ -13,8 +11,8 @@ import java.util.UUID;
 public class Notification {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
 
     @ManyToOne(targetEntity = Event.class)
     @JoinColumn(referencedColumnName = "id")
