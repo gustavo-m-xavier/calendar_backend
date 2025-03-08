@@ -1,6 +1,7 @@
 package com.calendar.CalendarApplication.controller;
 
 import com.calendar.CalendarApplication.dtos.UserDto;
+import com.calendar.CalendarApplication.dtos.UserResponseDto;
 import com.calendar.CalendarApplication.entity.User;
 import com.calendar.CalendarApplication.services.UserService;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +25,10 @@ public class UserController {
             var createdUser = userService.CreateUser(user);
 
             if (createdUser != null) {
+                UserResponseDto userResponse = new UserResponseDto(createdUser.getUsername(), createdUser.getEmail(), createdUser.getBirthDate());
+
                 return ResponseEntity.status(201)
-                        .body(Map.of("message", "Usuário criado com sucesso!", "user", createdUser));
+                        .body(Map.of("message", "Usuário criado com sucesso!", "user", userResponse));
             } else {
                 return ResponseEntity.status(409)
                         .body(Map.of("message", "Erro: O usuário já existe. Tente com outro nome de usuário"));

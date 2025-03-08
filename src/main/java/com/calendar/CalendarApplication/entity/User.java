@@ -2,7 +2,6 @@ package com.calendar.CalendarApplication.entity;
 
 import jakarta.persistence.*;
 
-import lombok.Getter;
 import lombok.Setter;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -14,7 +13,6 @@ import java.util.Date;
 
 @Entity
 @Table(name = "users")
-@Getter
 @Setter
 public class User {
 
@@ -48,4 +46,20 @@ public class User {
     }
 
     public User() {}
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Date getBirthDate() {
+        return birthDate;
+    }
 }

@@ -4,9 +4,9 @@ import com.calendar.CalendarApplication.dtos.UserDto;
 import com.calendar.CalendarApplication.entity.User;
 import com.calendar.CalendarApplication.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class UserService {
@@ -25,7 +25,10 @@ public class UserService {
             return existingUser.get();
         }
 
-        var entity = new User(userDto.username(), userDto.email(), userDto.password(), userDto.birth_date());
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String hashedPassword = passwordEncoder.encode(userDto.password());
+
+        var entity = new User(userDto.username(), userDto.email(), hashedPassword, userDto.birth_date());
 
         var savedUser =  userRepository.save(entity);
 
@@ -33,6 +36,19 @@ public class UserService {
     }
 
     public Optional<User> getUser(String email, String password) {
-        return userRepository.findByEmailAndPassword(email, password);
+
+        Optional<User> user = userRepository.findByEmail(email);
+
+        if (user.isEmpty()) {
+            return Optional.empty();
+        }
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+        if (passwordEncoder.matches(password, user.get().getPassword())) {
+            return user;
+        } else {
+            return Optional.empty();
+        }
     }
 }
