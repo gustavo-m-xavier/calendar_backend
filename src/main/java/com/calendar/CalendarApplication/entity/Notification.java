@@ -1,13 +1,9 @@
 package com.calendar.CalendarApplication.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
 @Entity
 @Table(name = "notifications")
-@Getter
-@Setter
 public class Notification {
 
     @Id
@@ -32,4 +28,28 @@ public class Notification {
     }
 
     public Notification() {}
+
+    public Event getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(Event eventId) {
+        this.eventId = eventId;
+    }
+
+    public User getUserId() {
+        return userId;
+    }
+
+    public void setUserId(User userId) {
+        this.userId = userId;
+    }
+
+    public boolean isHasSeen() {
+        return hasSeen;
+    }
+
+    public void setHasSeen(boolean hasSeen) {
+        this.hasSeen = hasSeen;
+    }
 }
