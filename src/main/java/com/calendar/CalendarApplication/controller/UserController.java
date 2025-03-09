@@ -1,5 +1,7 @@
 package com.calendar.CalendarApplication.controller;
 
+import com.calendar.CalendarApplication.dtos.LoginDto;
+import com.calendar.CalendarApplication.dtos.LoginResponseDto;
 import com.calendar.CalendarApplication.dtos.UserDto;
 import com.calendar.CalendarApplication.dtos.UserResponseDto;
 import com.calendar.CalendarApplication.entity.User;
@@ -8,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -40,9 +43,41 @@ public class UserController {
         }
     }
 
-    @GetMapping("/get")
-    public ResponseEntity<User> getUser(@RequestParam String email, @RequestParam String password) {
-        return null;
+    @PostMapping("/login")
+    public ResponseEntity<?> authUser(@RequestBody LoginDto loginDto) {
+
+        try{
+
+            String token = userService.authenticateUser(loginDto.email(), loginDto.password());
+
+            if(token != null) {
+                Optional<User> authUser = userService.getUser(loginDto.email(), loginDto.password());
+
+                LoginResponseDto authResponse = new LoginResponseDto(
+                        authUser.get().getUsername(),
+                        authUser.get().getEmail(),
+                        authUser.get().getBirthDate(),
+                        token
+                );
+
+                return ResponseEntity.status(200).body(
+                        Map.of(
+                                "message", "Login realizado com sucesso",
+                                "user", authResponse));
+            } else {
+                return ResponseEntity.status(401)
+                        .body(Map.of("message", "Invalid email or password"));
+            }
+
+        }catch (Exception e) {
+            return ResponseEntity.status(500).body(
+                    Map.of(
+                            "message", "Ocorreu um erro no login, tente novamente mais tarde.",
+                            "errorDetail", e.getMessage()
+                    )
+            );
+        }
+
     }
 
     @PostMapping("/update")

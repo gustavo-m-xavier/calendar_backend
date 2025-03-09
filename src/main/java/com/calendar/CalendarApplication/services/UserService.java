@@ -3,6 +3,7 @@ package com.calendar.CalendarApplication.services;
 import com.calendar.CalendarApplication.dtos.UserDto;
 import com.calendar.CalendarApplication.entity.User;
 import com.calendar.CalendarApplication.repository.UserRepository;
+import com.calendar.CalendarApplication.utils.JwtUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -11,10 +12,12 @@ import java.util.Optional;
 @Service
 public class UserService {
 
+    private JwtUtil jwtUtil;
     private UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     public User CreateUser(UserDto userDto) {
@@ -49,6 +52,15 @@ public class UserService {
             return user;
         } else {
             return Optional.empty();
+        }
+    }
+
+    public String authenticateUser(String email, String password) {
+        Optional<User> user = getUser(email, password);
+        if (user.isPresent()) {
+            return jwtUtil.generateToken(user.get().getUsername());
+        }else {
+            return null;
         }
     }
 }
