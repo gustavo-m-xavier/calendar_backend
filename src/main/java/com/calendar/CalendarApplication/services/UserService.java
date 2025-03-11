@@ -63,4 +63,42 @@ public class UserService {
             return null;
         }
     }
+
+    public User updateUser(UserDto user) {
+
+        var userToUpdate = userRepository
+                                .findByEmail(user.email())
+                                .orElseThrow(() -> new RuntimeException("Usuário Não Encontrado"));
+
+        if (
+                !user.username().equals(userToUpdate.getUsername()) &&
+                !userRepository.existsByUsername(user.username())
+        ) {
+            userToUpdate.setUsername(user.username());
+        } else if(
+                !user.email().equals(userToUpdate.getEmail()) &&
+                !userRepository.existsByEmail(user.email())
+        ) {
+            userToUpdate.setEmail(user.email());
+        }
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String hashedPassword = passwordEncoder.encode(user.password());
+
+        userToUpdate.setPassword(hashedPassword);
+        userToUpdate.setBirthDate(user.birth_date());
+
+        return userRepository.save(userToUpdate);
+
+    }
+
+    public String deleteUser(String email) {
+        var user = userRepository.findByEmail(email);
+        if(user.isPresent()) {
+            userRepository.delete(user.get());
+            return "Usuário deletado com sucesso";
+        } else {
+            return "Usuário não encontrado";
+        }
+    }
 }

@@ -6,8 +6,11 @@ import com.calendar.CalendarApplication.dtos.UserDto;
 import com.calendar.CalendarApplication.dtos.UserResponseDto;
 import com.calendar.CalendarApplication.entity.User;
 import com.calendar.CalendarApplication.services.UserService;
+import com.calendar.CalendarApplication.utils.DotenvUtil;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.calendar.CalendarApplication.utils.JwtUtil;
 
 import java.util.Map;
 import java.util.Optional;
@@ -17,9 +20,11 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
+    private final JwtUtil jwtUtil;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, JwtUtil jwtUtil) {
         this.userService = userService;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/register")
@@ -66,7 +71,7 @@ public class UserController {
                                 "user", authResponse));
             } else {
                 return ResponseEntity.status(401)
-                        .body(Map.of("message", "Invalid email or password"));
+                        .body(Map.of("message", "E-mail ou senha inválidos"));
             }
 
         }catch (Exception e) {
@@ -80,13 +85,57 @@ public class UserController {
 
     }
 
-    @PostMapping("/update")
-    public ResponseEntity<User> updateUser(@RequestBody UserDto user) {
-        return null;
+    @PutMapping("/update")
+    public ResponseEntity<?> updateUser(
+            @RequestBody UserDto user
+//            @RequestHeader("Authorization") String token
+    ) {
+
+//        if(!jwtUtil.validateToken(token, user.username())){
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+
+        try {
+            var updatedUser = userService.updateUser(user);
+
+            return ResponseEntity.status(200).body(
+                    Map.of(
+                            "message", "Usuário atualizado com sucesso!",
+                            "user", updatedUser
+                    )
+            );
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(
+                    Map.of(
+                            "message", "Ocorreu um erro enquanto atualizava o usuário.",
+                            "errorDetail", e.getMessage()
+                    )
+            );
+        }
     }
 
-    @PostMapping("/delete")
-    public ResponseEntity<User> deleteUser(@RequestParam String email) {
-        return null;
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteUser(@RequestBody String email) {
+
+        try {
+            var response = userService.deleteUser(email);
+
+            if(response.contains("deletado")){
+                return ResponseEntity.status(200).body(
+                        response
+                );
+            } else {
+                return ResponseEntity.status(404).body(response);
+            }
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(
+                    Map.of(
+                            "message", "Ocorreu um erro enquanto deletava o usuário.",
+                            "errorDetail", e.getMessage()
+                    )
+            );
+        }
     }
 }
