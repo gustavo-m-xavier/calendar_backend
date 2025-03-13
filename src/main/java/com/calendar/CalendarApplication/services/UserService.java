@@ -92,8 +92,8 @@ public class UserService {
 
     }
 
-    public String deleteUser(String email) {
-        var user = userRepository.findByEmail(email);
+    public String deleteUser(int id) {
+        var user = userRepository.findById(id);
         if(user.isPresent()) {
             userRepository.delete(user.get());
             return "Usuário deletado com sucesso";

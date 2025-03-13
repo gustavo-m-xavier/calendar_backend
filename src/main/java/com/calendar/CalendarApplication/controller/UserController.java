@@ -59,6 +59,7 @@ public class UserController {
                 Optional<User> authUser = userService.getUser(loginDto.email(), loginDto.password());
 
                 LoginResponseDto authResponse = new LoginResponseDto(
+                        authUser.get().getId(),
                         authUser.get().getUsername(),
                         authUser.get().getEmail(),
                         authUser.get().getBirthDate(),
@@ -115,11 +116,11 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteUser(@RequestBody String email) {
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable int id) {
 
         try {
-            var response = userService.deleteUser(email);
+            var response = userService.deleteUser(id);
 
             if(response.contains("deletado")){
                 return ResponseEntity.status(200).body(
