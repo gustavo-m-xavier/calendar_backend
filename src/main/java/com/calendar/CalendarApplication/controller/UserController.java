@@ -4,7 +4,6 @@ import com.calendar.CalendarApplication.dtos.*;
 import com.calendar.CalendarApplication.entity.User;
 import com.calendar.CalendarApplication.repository.UserRepository;
 import com.calendar.CalendarApplication.services.UserService;
-import com.calendar.CalendarApplication.utils.DotenvUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +29,7 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<?> createUser(@RequestBody UserDto user) {
         try {
-            var createdUser = userService.CreateUser(user);
+            var createdUser = userService.createUser(user);
 
             if (createdUser != null) {
                 UserResponseDto userResponse = new UserResponseDto(createdUser.getUsername(), createdUser.getEmail(), createdUser.getBirthDate());
@@ -95,7 +94,7 @@ public class UserController {
         var userWithoutChanges = userRepository.findById(user.id());
 
         if(!jwtUtil.validateToken(token, userWithoutChanges.get().getUsername())){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token inválido ou expirado");
         }
 
         try {

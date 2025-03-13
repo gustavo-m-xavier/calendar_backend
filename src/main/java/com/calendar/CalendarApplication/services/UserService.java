@@ -3,6 +3,7 @@ package com.calendar.CalendarApplication.services;
 import com.calendar.CalendarApplication.dtos.UpdateUserDto;
 import com.calendar.CalendarApplication.dtos.UserDto;
 import com.calendar.CalendarApplication.entity.User;
+import com.calendar.CalendarApplication.interfaces.UserServiceInterface;
 import com.calendar.CalendarApplication.repository.UserRepository;
 import com.calendar.CalendarApplication.utils.JwtUtil;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements UserServiceInterface {
 
     private JwtUtil jwtUtil;
     private UserRepository userRepository;
@@ -21,7 +22,7 @@ public class UserService {
         this.jwtUtil = jwtUtil;
     }
 
-    public User CreateUser(UserDto userDto) {
+    public User createUser(UserDto userDto) {
 
         var existingUser = getUser(userDto.email(), userDto.password());
 
