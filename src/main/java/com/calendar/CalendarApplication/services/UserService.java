@@ -1,9 +1,9 @@
 package com.calendar.CalendarApplication.services;
 
-import com.calendar.CalendarApplication.dtos.UpdateUserDto;
-import com.calendar.CalendarApplication.dtos.UserDto;
+import com.calendar.CalendarApplication.dtos.user.UpdateUserDto;
+import com.calendar.CalendarApplication.dtos.user.UserDto;
 import com.calendar.CalendarApplication.entity.User;
-import com.calendar.CalendarApplication.interfaces.UserServiceInterface;
+import com.calendar.CalendarApplication.interfaces.user.UserServiceInterface;
 import com.calendar.CalendarApplication.repository.UserRepository;
 import com.calendar.CalendarApplication.utils.JwtUtil;
 import org.springframework.stereotype.Service;

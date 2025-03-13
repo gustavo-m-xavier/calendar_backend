@@ -1,7 +1,7 @@
-package com.calendar.CalendarApplication.interfaces;
+package com.calendar.CalendarApplication.interfaces.user;
 
-import com.calendar.CalendarApplication.dtos.UpdateUserDto;
-import com.calendar.CalendarApplication.dtos.UserDto;
+import com.calendar.CalendarApplication.dtos.user.UpdateUserDto;
+import com.calendar.CalendarApplication.dtos.user.UserDto;
 import com.calendar.CalendarApplication.entity.User;
 
 import java.util.Optional;

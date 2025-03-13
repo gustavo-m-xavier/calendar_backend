@@ -1,4 +1,4 @@
-package com.calendar.CalendarApplication.dtos;
+package com.calendar.CalendarApplication.dtos.user;
 
 import java.util.Date;
 

@@ -1,7 +1,8 @@
 package com.calendar.CalendarApplication.controller;
 
-import com.calendar.CalendarApplication.dtos.*;
+import com.calendar.CalendarApplication.dtos.user.*;
 import com.calendar.CalendarApplication.entity.User;
+import com.calendar.CalendarApplication.interfaces.user.UserControllerInterface;
 import com.calendar.CalendarApplication.repository.UserRepository;
 import com.calendar.CalendarApplication.services.UserService;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
-public class UserController {
+public class UserController implements UserControllerInterface {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
