@@ -28,7 +28,7 @@ public class JwtUtil {
     }
 
     private Key getSecretKey() {
-        return Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
     public String generateToken(String username) {
@@ -54,7 +54,7 @@ public class JwtUtil {
 
     public Claims extractClaims(String token) {
         return Jwts.parser()
-                .setSigningKey(secretKey.getBytes())
+                .setSigningKey(getSecretKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();

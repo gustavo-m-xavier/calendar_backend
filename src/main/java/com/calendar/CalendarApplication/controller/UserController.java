@@ -2,6 +2,7 @@ package com.calendar.CalendarApplication.controller;
 
 import com.calendar.CalendarApplication.dtos.*;
 import com.calendar.CalendarApplication.entity.User;
+import com.calendar.CalendarApplication.repository.UserRepository;
 import com.calendar.CalendarApplication.services.UserService;
 import com.calendar.CalendarApplication.utils.DotenvUtil;
 import org.springframework.http.HttpStatus;
@@ -18,10 +19,12 @@ public class UserController {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
 
-    public UserController(UserService userService, JwtUtil jwtUtil) {
+    public UserController(UserService userService, JwtUtil jwtUtil, UserRepository userRepository) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/register")
@@ -85,13 +88,15 @@ public class UserController {
 
     @PutMapping("/update")
     public ResponseEntity<?> updateUser(
-            @RequestBody UpdateUserDto user
-//            @RequestHeader("Authorization") String token
+            @RequestBody UpdateUserDto user,
+            @RequestHeader("Authorization") String token
     ) {
 
-//        if(!jwtUtil.validateToken(token, user.username())){
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//        }
+        var userWithoutChanges = userRepository.findById(user.id());
+
+        if(!jwtUtil.validateToken(token, userWithoutChanges.get().getUsername())){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
         try {
             var updatedUser = userService.updateUser(user);
@@ -114,7 +119,15 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable int id) {
+    public ResponseEntity<?> deleteUser(
+            @PathVariable int id,
+            @RequestHeader("Authorization") String token
+    ) {
+
+        var existingUser = userRepository.findById(id);
+        if(!jwtUtil.validateToken(token, existingUser.get().getUsername())){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
         try {
             var response = userService.deleteUser(id);
