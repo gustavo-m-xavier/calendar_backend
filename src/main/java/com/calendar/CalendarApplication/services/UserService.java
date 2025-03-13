@@ -1,5 +1,6 @@
 package com.calendar.CalendarApplication.services;
 
+import com.calendar.CalendarApplication.dtos.UpdateUserDto;
 import com.calendar.CalendarApplication.dtos.UserDto;
 import com.calendar.CalendarApplication.entity.User;
 import com.calendar.CalendarApplication.repository.UserRepository;
@@ -64,10 +65,10 @@ public class UserService {
         }
     }
 
-    public User updateUser(UserDto user) {
+    public User updateUser(UpdateUserDto user) {
 
         var userToUpdate = userRepository
-                                .findByEmail(user.email())
+                                .findById(user.id())
                                 .orElseThrow(() -> new RuntimeException("Usuário Não Encontrado"));
 
         if (
@@ -86,7 +87,7 @@ public class UserService {
         String hashedPassword = passwordEncoder.encode(user.password());
 
         userToUpdate.setPassword(hashedPassword);
-        userToUpdate.setBirthDate(user.birth_date());
+        userToUpdate.setBirthDate(user.birthDate());
 
         return userRepository.save(userToUpdate);
 

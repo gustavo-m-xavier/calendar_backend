@@ -1,9 +1,6 @@
 package com.calendar.CalendarApplication.controller;
 
-import com.calendar.CalendarApplication.dtos.LoginDto;
-import com.calendar.CalendarApplication.dtos.LoginResponseDto;
-import com.calendar.CalendarApplication.dtos.UserDto;
-import com.calendar.CalendarApplication.dtos.UserResponseDto;
+import com.calendar.CalendarApplication.dtos.*;
 import com.calendar.CalendarApplication.entity.User;
 import com.calendar.CalendarApplication.services.UserService;
 import com.calendar.CalendarApplication.utils.DotenvUtil;
@@ -88,7 +85,7 @@ public class UserController {
 
     @PutMapping("/update")
     public ResponseEntity<?> updateUser(
-            @RequestBody UserDto user
+            @RequestBody UpdateUserDto user
 //            @RequestHeader("Authorization") String token
     ) {
 
