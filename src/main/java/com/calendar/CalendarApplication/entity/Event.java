@@ -8,6 +8,8 @@ import java.util.Date;
 @Table(name = "events")
 public class Event {
 
+    private enum EventType {COMPROMISE, TASK}
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -15,6 +17,9 @@ public class Event {
     @ManyToOne(targetEntity = User.class)
     @JoinColumn(referencedColumnName = "id")
     private User user;
+
+    @Enumerated(EnumType.STRING)
+    private EventType eventType;
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -24,6 +29,9 @@ public class Event {
 
     @Column(name = "date", nullable = false)
     private Date date;
+
+    @Column(name = "is_completed")
+    private boolean isCompleted;
 
     public Event(User user, String title, String description, Date date) {
         this.user = user;
@@ -64,5 +72,21 @@ public class Event {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public EventType getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(EventType eventType) {
+        this.eventType = eventType;
+    }
+
+    public boolean isCompleted() {
+        return isCompleted;
+    }
+
+    public void setCompleted(boolean completed) {
+        isCompleted = completed;
     }
 }
