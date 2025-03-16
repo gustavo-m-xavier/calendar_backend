@@ -1,6 +1,7 @@
 package com.calendar.CalendarApplication.controller;
 
 import com.calendar.CalendarApplication.dtos.event.CreateEventDto;
+import com.calendar.CalendarApplication.dtos.event.GetEventsDto;
 import com.calendar.CalendarApplication.interfaces.event.EventControllerInterface;
 import com.calendar.CalendarApplication.repository.EventRepository;
 import com.calendar.CalendarApplication.repository.UserRepository;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -59,6 +61,52 @@ public class EventController implements EventControllerInterface {
                         .body(
                                 Map.of(
                                         "message", "Erro ao criar evento, usuário não encontrado."
+                                )
+                        );
+            }
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500)
+                    .body(
+                            Map.of(
+                                    "message", "Ocorreu um erro interno ao processar a solicitação. Tente novamente mais tarde.",
+                                    "errorDetail", e.getMessage()
+                            )
+                    );
+        }
+    }
+
+    @PostMapping("/get/{userId}")
+    public ResponseEntity<?> getEvent(
+            @PathVariable long userId,
+            @RequestHeader("Authorization") String token
+    ){
+        var user = userRepository.findById((int)userId);
+
+        if(!jwtUtil.validateToken(token, user.get().getUsername())){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token inválido ou expirado");
+        }
+
+        try {
+
+            List<GetEventsDto> userEvents = eventService.findEventsByUserId(userId);
+
+            if(userEvents != null) {
+
+                return ResponseEntity
+                        .status(200)
+                        .body(
+                                Map.of(
+                                        "events", userEvents
+                                )
+                        );
+
+            } else {
+                return ResponseEntity
+                        .status(404)
+                        .body(
+                                Map.of(
+                                        "message", "Não foram encontrados eventos desse usuário"
                                 )
                         );
             }

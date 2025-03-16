@@ -1,15 +1,21 @@
 package com.calendar.CalendarApplication.controller;
 
+import com.calendar.CalendarApplication.dtos.event.GetEventsDto;
 import com.calendar.CalendarApplication.dtos.user.*;
+import com.calendar.CalendarApplication.entity.Event;
 import com.calendar.CalendarApplication.entity.User;
 import com.calendar.CalendarApplication.interfaces.user.UserControllerInterface;
+import com.calendar.CalendarApplication.repository.EventRepository;
 import com.calendar.CalendarApplication.repository.UserRepository;
+import com.calendar.CalendarApplication.services.EventService;
 import com.calendar.CalendarApplication.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.calendar.CalendarApplication.utils.JwtUtil;
 
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -20,11 +26,13 @@ public class UserController implements UserControllerInterface {
     private final UserService userService;
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
+    private EventService eventService;
 
-    public UserController(UserService userService, JwtUtil jwtUtil, UserRepository userRepository) {
+    public UserController(UserService userService, JwtUtil jwtUtil, UserRepository userRepository, EventService eventService) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
+        this.eventService = eventService;
     }
 
     @PostMapping("/register")
@@ -66,10 +74,14 @@ public class UserController implements UserControllerInterface {
                         token
                 );
 
-                return ResponseEntity.status(200).body(
-                        Map.of(
-                                "message", "Login realizado com sucesso",
-                                "user", authResponse));
+                List<GetEventsDto> userEvents = eventService.findEventsByUserId(authUser.get().getId());
+
+                LinkedHashMap<String, Object> response = new LinkedHashMap<>();
+                response.put("message", "Login realizado com sucesso");
+                response.put("user", authResponse);
+                response.put("user_events", userEvents);
+
+                return ResponseEntity.status(200).body(response);
             } else {
                 return ResponseEntity.status(401)
                         .body(Map.of("message", "E-mail ou senha inválidos"));

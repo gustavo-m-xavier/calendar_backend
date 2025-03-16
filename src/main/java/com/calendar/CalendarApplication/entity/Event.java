@@ -92,4 +92,8 @@ public class Event {
     public void setCompleted(boolean completed) {
         isCompleted = completed;
     }
+
+    public int getId() {
+        return id;
+    }
 }
