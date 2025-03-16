@@ -2,13 +2,15 @@ package com.calendar.CalendarApplication.entity;
 
 import jakarta.persistence.*;
 
+import javax.swing.text.html.Option;
 import java.util.Date;
+import java.util.Optional;
 
 @Entity
 @Table(name = "events")
 public class Event {
 
-    private enum EventType {COMPROMISE, TASK}
+    public enum EventType {COMPROMISE, TASK}
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,7 +26,7 @@ public class Event {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = false)
     private String description;
 
     @Column(name = "date", nullable = false)
@@ -33,8 +35,9 @@ public class Event {
     @Column(name = "is_completed")
     private boolean isCompleted;
 
-    public Event(User user, String title, String description, Date date) {
+    public Event(User user, EventType eventType , String title, String description, Date date) {
         this.user = user;
+        this.eventType = eventType;
         this.title = title;
         this.description = description;
         this.date = date;
