@@ -23,4 +23,9 @@ public interface EventControllerInterface {
             @RequestBody UpdateEventDto updateEventDto,
             @RequestHeader("Authorization") String token
     );
+
+    public ResponseEntity<?> deleteEvent(
+            @PathVariable long id,
+            @RequestHeader("Authorization") String token
+    );
 }

@@ -69,4 +69,8 @@ public class EventService implements EventServiceInterface {
         return eventRepository.save(savedEvent);
     }
 
+    public void deleteEvent(Event event){
+        eventRepository.delete(event);
+    }
+
 }

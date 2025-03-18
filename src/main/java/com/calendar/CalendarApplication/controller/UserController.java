@@ -2,10 +2,8 @@ package com.calendar.CalendarApplication.controller;
 
 import com.calendar.CalendarApplication.dtos.event.GetEventsDto;
 import com.calendar.CalendarApplication.dtos.user.*;
-import com.calendar.CalendarApplication.entity.Event;
 import com.calendar.CalendarApplication.entity.User;
 import com.calendar.CalendarApplication.interfaces.user.UserControllerInterface;
-import com.calendar.CalendarApplication.repository.EventRepository;
 import com.calendar.CalendarApplication.repository.UserRepository;
 import com.calendar.CalendarApplication.services.EventService;
 import com.calendar.CalendarApplication.services.UserService;
@@ -43,16 +41,31 @@ public class UserController implements UserControllerInterface {
             if (createdUser != null) {
                 UserResponseDto userResponse = new UserResponseDto(createdUser.getUsername(), createdUser.getEmail(), createdUser.getBirthDate());
 
-                return ResponseEntity.status(201)
-                        .body(Map.of("message", "Usuário criado com sucesso!", "user", userResponse));
+                return ResponseEntity
+                        .status(201)
+                        .body(
+                                Map.of(
+                                        "message", "Usuário criado com sucesso!",
+                                        "user", userResponse
+                                )
+                        );
             } else {
-                return ResponseEntity.status(409)
-                        .body(Map.of("message", "Erro: O usuário já existe. Tente com outro nome de usuário"));
+                return ResponseEntity
+                        .status(409)
+                        .body(
+                                Map.of(
+                                        "message", "Erro: Este nome de usuário já existe. Tente com outro nome de usuário"
+                                )
+                        );
             }
         } catch (Exception e) {
             return ResponseEntity.status(500)
-                    .body(Map.of("message", "Ocorreu um erro interno ao processar a solicitação. Tente novamente mais tarde.",
-                            "errorDetail", e.getMessage()));
+                    .body(
+                            Map.of(
+                                    "message", "Ocorreu um erro interno ao processar a solicitação. Tente novamente mais tarde.",
+                                    "errorDetail", e.getMessage()
+                            )
+                    );
         }
     }
 
@@ -81,9 +94,12 @@ public class UserController implements UserControllerInterface {
                 response.put("user", authResponse);
                 response.put("user_events", userEvents);
 
-                return ResponseEntity.status(200).body(response);
+                return ResponseEntity
+                        .status(200)
+                        .body(response);
             } else {
-                return ResponseEntity.status(401)
+                return ResponseEntity
+                        .status(401)
                         .body(Map.of("message", "E-mail ou senha inválidos"));
             }
 

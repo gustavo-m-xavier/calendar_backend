@@ -67,7 +67,8 @@ public class EventController implements EventControllerInterface {
             }
 
         } catch (Exception e) {
-            return ResponseEntity.status(500)
+            return ResponseEntity
+                    .status(500)
                     .body(
                             Map.of(
                                     "message", "Ocorreu um erro interno ao processar a solicitação. Tente novamente mais tarde.",
@@ -113,7 +114,8 @@ public class EventController implements EventControllerInterface {
             }
 
         } catch (Exception e) {
-            return ResponseEntity.status(500)
+            return ResponseEntity
+                    .status(500)
                     .body(
                             Map.of(
                                     "message", "Ocorreu um erro interno ao processar a solicitação. Tente novamente mais tarde.",
@@ -160,7 +162,56 @@ public class EventController implements EventControllerInterface {
 
 
         } catch (Exception e) {
-            return ResponseEntity.status(500)
+            return ResponseEntity
+                    .status(500)
+                    .body(
+                            Map.of(
+                                    "message", "Ocorreu um erro interno ao processar a solicitação. Tente novamente mais tarde.",
+                                    "errorDetail", e.getMessage()
+                            )
+                    );
+        }
+
+    }
+
+    @DeleteMapping("/delete/{eventId}")
+    public ResponseEntity<?> deleteEvent(
+            @PathVariable long eventId,
+            @RequestHeader("Authorization") String token
+    ){
+        try {
+
+            var event = eventRepository.findById(eventId);
+
+            if(event != null) {
+                var user = event.getUser();
+
+                if(!jwtUtil.validateToken(token, user.getUsername())){
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token inválido ou expirado");
+                }
+
+                eventService.deleteEvent(event);
+
+                return ResponseEntity
+                        .status(200)
+                        .body(
+                                Map.of(
+                                        "message", "Evento deletado com sucesso!"
+                                )
+                        );
+            } else {
+                return ResponseEntity
+                        .status(404)
+                        .body(
+                                Map.of(
+                                        "message", "Evento não encontrado"
+                                )
+                        );
+            }
+
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(500)
                     .body(
                             Map.of(
                                     "message", "Ocorreu um erro interno ao processar a solicitação. Tente novamente mais tarde.",
