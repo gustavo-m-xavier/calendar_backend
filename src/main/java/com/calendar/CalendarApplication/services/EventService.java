@@ -2,6 +2,7 @@ package com.calendar.CalendarApplication.services;
 
 import com.calendar.CalendarApplication.dtos.event.CreateEventDto;
 import com.calendar.CalendarApplication.dtos.event.GetEventsDto;
+import com.calendar.CalendarApplication.dtos.event.UpdateEventDto;
 import com.calendar.CalendarApplication.entity.Event;
 import com.calendar.CalendarApplication.entity.User;
 import com.calendar.CalendarApplication.interfaces.event.EventServiceInterface;
@@ -53,6 +54,19 @@ public class EventService implements EventServiceInterface {
                         event.isCompleted()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    public Event updateEvent(UpdateEventDto eventToUpdate) {
+
+        var savedEvent = eventRepository.findById(eventToUpdate.id());
+
+        savedEvent.setEventType(eventToUpdate.eventType());
+        savedEvent.setTitle(eventToUpdate.title());
+        savedEvent.setDescription(eventToUpdate.description());
+        savedEvent.setDate(eventToUpdate.date());
+        savedEvent.setCompleted(eventToUpdate.isCompleted());
+
+        return eventRepository.save(savedEvent);
     }
 
 }

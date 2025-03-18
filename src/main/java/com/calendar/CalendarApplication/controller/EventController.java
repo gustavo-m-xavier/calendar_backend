@@ -2,6 +2,7 @@ package com.calendar.CalendarApplication.controller;
 
 import com.calendar.CalendarApplication.dtos.event.CreateEventDto;
 import com.calendar.CalendarApplication.dtos.event.GetEventsDto;
+import com.calendar.CalendarApplication.dtos.event.UpdateEventDto;
 import com.calendar.CalendarApplication.interfaces.event.EventControllerInterface;
 import com.calendar.CalendarApplication.repository.EventRepository;
 import com.calendar.CalendarApplication.repository.UserRepository;
@@ -120,6 +121,54 @@ public class EventController implements EventControllerInterface {
                             )
                     );
         }
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> updateEvent(
+            @RequestBody UpdateEventDto updateEventDto,
+            @RequestHeader("Authorization") String token
+    ){
+
+        var user = userRepository.findById((int)updateEventDto.userId());
+
+        if(!jwtUtil.validateToken(token, user.get().getUsername())){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token inválido ou expirado");
+        }
+
+        try{
+
+            var updatedEvent = eventService.updateEvent(updateEventDto);
+
+            if(updatedEvent != null) {
+                return ResponseEntity
+                        .status(200)
+                        .body(
+                                Map.of(
+                                        "Message", "Evento atualizado com sucesso!",
+                                        "evento:", updatedEvent
+                                )
+                        );
+            } else {
+                return ResponseEntity
+                        .status(404)
+                        .body(
+                                Map.of(
+                                        "Message", "Evento não encontrado"
+                                )
+                        );
+            }
+
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500)
+                    .body(
+                            Map.of(
+                                    "message", "Ocorreu um erro interno ao processar a solicitação. Tente novamente mais tarde.",
+                                    "errorDetail", e.getMessage()
+                            )
+                    );
+        }
+
     }
 
 }
