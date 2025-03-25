@@ -83,8 +83,7 @@ public class UserController implements UserControllerInterface {
                         authUser.get().getId(),
                         authUser.get().getUsername(),
                         authUser.get().getEmail(),
-                        authUser.get().getBirthDate(),
-                        token
+                        authUser.get().getBirthDate()
                 );
 
                 List<GetEventsDto> userEvents = eventService.findEventsByUserId(authUser.get().getId());
@@ -96,6 +95,7 @@ public class UserController implements UserControllerInterface {
 
                 return ResponseEntity
                         .status(200)
+                        .header("Token", "Bearer " + token)
                         .body(response);
             } else {
                 return ResponseEntity
