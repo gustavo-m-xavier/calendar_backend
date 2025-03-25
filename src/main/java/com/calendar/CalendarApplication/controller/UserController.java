@@ -95,7 +95,7 @@ public class UserController implements UserControllerInterface {
 
                 return ResponseEntity
                         .status(200)
-                        .header("Token", "Bearer " + token)
+                        .header("Authorization", "Bearer " + token)
                         .body(response);
             } else {
                 return ResponseEntity
