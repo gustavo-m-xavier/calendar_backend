@@ -1,8 +1,31 @@
 package com.calendar.CalendarApplication.dtos.event;
 
 import com.calendar.CalendarApplication.entity.Event;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.Date;
 
-public record UpdateEventDto(long id, Event.EventType eventType, String title, String description, Date date, boolean isCompleted, long userId) {
-}
+public record UpdateEventDto(
+
+        @NotNull
+        @NotEmpty long id,
+
+        @NotNull
+        @NotEmpty Event.EventType eventType,
+
+        @NotNull
+        @NotEmpty String title,
+
+        @NotNull
+        @NotEmpty String description,
+
+        @NotNull
+        @NotEmpty Date date,
+
+        @NotNull
+        @NotEmpty boolean isCompleted,
+
+        @NotNull
+        @NotEmpty long userId
+) {}

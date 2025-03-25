@@ -1,8 +1,25 @@
 package com.calendar.CalendarApplication.dtos.user;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.Date;
 
-public record UserDto(String username, String email, String password, Date birth_date) {
+public record UserDto(
+
+        @NotNull
+        @NotEmpty String username,
+
+        @NotNull @Email
+        @NotEmpty String email,
+
+        @NotNull
+        @NotEmpty String password,
+
+        @NotNull
+        @NotEmpty Date birth_date
+) {
 
     @Override
     public String username() {
