@@ -34,9 +34,18 @@ public class EventController implements EventControllerInterface {
     @PostMapping("/create")
     public ResponseEntity<?> createEvent(
             @RequestBody CreateEventDto eventDto,
-            @RequestHeader("Authorization") String token
+            @RequestHeader("Authorization") String authorizationHeader
     ) {
 
+        if(!authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(403).body(
+                    Map.of(
+                            "Erro", "Bearer token errado ou nao definido"
+                    )
+            );
+        }
+
+        var token = authorizationHeader.substring(7, authorizationHeader.length());
         var user = userRepository.findById(eventDto.user_id());
 
         if(!jwtUtil.validateToken(token, user.get().getUsername())){
@@ -81,8 +90,18 @@ public class EventController implements EventControllerInterface {
     @PostMapping("/get/{userId}")
     public ResponseEntity<?> getEvent(
             @PathVariable long userId,
-            @RequestHeader("Authorization") String token
+            @RequestHeader("Authorization") String authorizationHeader
     ){
+
+        if(!authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(403).body(
+                    Map.of(
+                            "Erro", "Bearer token errado ou nao definido"
+                    )
+            );
+        }
+
+        var token = authorizationHeader.substring(7, authorizationHeader.length());
         var user = userRepository.findById((int)userId);
 
         if(!jwtUtil.validateToken(token, user.get().getUsername())){
@@ -128,9 +147,18 @@ public class EventController implements EventControllerInterface {
     @PutMapping("/update")
     public ResponseEntity<?> updateEvent(
             @RequestBody UpdateEventDto updateEventDto,
-            @RequestHeader("Authorization") String token
+            @RequestHeader("Authorization") String authorizationHeader
     ){
 
+        if(!authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(403).body(
+                    Map.of(
+                            "Erro", "Bearer token errado ou nao definido"
+                    )
+            );
+        }
+
+        var token = authorizationHeader.substring(7, authorizationHeader.length());
         var user = userRepository.findById((int)updateEventDto.userId());
 
         if(!jwtUtil.validateToken(token, user.get().getUsername())){
@@ -177,13 +205,25 @@ public class EventController implements EventControllerInterface {
     @DeleteMapping("/delete/{eventId}")
     public ResponseEntity<?> deleteEvent(
             @PathVariable long eventId,
-            @RequestHeader("Authorization") String token
+            @RequestHeader("Authorization") String authorizationHeader
     ){
+
+        if(!authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(403).body(
+                    Map.of(
+                            "Erro", "Bearer token errado ou nao definido"
+                    )
+            );
+        }
+
+        var token = authorizationHeader.substring(7, authorizationHeader.length());
+
         try {
 
             var event = eventRepository.findById(eventId);
 
             if(event != null) {
+
                 var user = event.getUser();
 
                 if(!jwtUtil.validateToken(token, user.getUsername())){

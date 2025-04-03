@@ -117,9 +117,18 @@ public class UserController implements UserControllerInterface {
     @PutMapping("/update")
     public ResponseEntity<?> updateUser(
             @RequestBody UpdateUserDto user,
-            @RequestHeader("Authorization") String token
+            @RequestHeader("Authorization") String authorizationHeader
     ) {
 
+        if(!authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(403).body(
+                    Map.of(
+                            "Erro", "Bearer token errado ou nao definido"
+                    )
+            );
+        }
+
+        var token = authorizationHeader.substring(7, authorizationHeader.length());
         var userWithoutChanges = userRepository.findById(user.id());
 
         if(!jwtUtil.validateToken(token, userWithoutChanges.get().getUsername())){
@@ -149,9 +158,18 @@ public class UserController implements UserControllerInterface {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteUser(
             @PathVariable int id,
-            @RequestHeader("Authorization") String token
+            @RequestHeader("Authorization") String authorizationHeader
     ) {
 
+        if(!authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(403).body(
+                    Map.of(
+                            "Erro", "Bearer token errado ou nao definido"
+                    )
+            );
+        }
+
+        var token = authorizationHeader.substring(7, authorizationHeader.length());
         var existingUser = userRepository.findById(id);
         if(!jwtUtil.validateToken(token, existingUser.get().getUsername())){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
