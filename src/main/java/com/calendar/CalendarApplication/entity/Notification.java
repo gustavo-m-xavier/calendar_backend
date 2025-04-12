@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class Notification {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     @Column(name = "title")
@@ -18,11 +18,11 @@ public class Notification {
 
     @ManyToOne(targetEntity = Event.class)
     @JoinColumn(referencedColumnName = "id")
-    private Event eventId;
+    private Event event;
 
     @ManyToOne(targetEntity = User.class)
     @JoinColumn(referencedColumnName = "id")
-    private User userId;
+    private User user;
 
     @Column(name = "has_seen", nullable = false)
     private boolean hasSeen;
@@ -30,8 +30,8 @@ public class Notification {
     public Notification(String title, String description, Event eventId, User userId, boolean hasSeen) {
         this.title = title;
         this.description = description;
-        this.eventId = eventId;
-        this.userId = userId;
+        this.event = eventId;
+        this.user = userId;
         this.hasSeen = hasSeen;
     }
 
@@ -53,20 +53,20 @@ public class Notification {
         this.description = description;
     }
 
-    public Event getEventId() {
-        return eventId;
+    public Event getEvent() {
+        return event;
     }
 
-    public void setEventId(Event eventId) {
-        this.eventId = eventId;
+    public void setEvent(Event eventId) {
+        this.event = eventId;
     }
 
-    public User getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
     public void setUserId(User userId) {
-        this.userId = userId;
+        this.user = userId;
     }
 
     public boolean isHasSeen() {

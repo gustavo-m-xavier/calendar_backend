@@ -13,7 +13,7 @@ public class Event {
     public enum EventType {COMPROMISE, TASK}
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     @ManyToOne(targetEntity = User.class)
