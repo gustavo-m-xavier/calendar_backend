@@ -2,10 +2,12 @@ package com.calendar.CalendarApplication.controller;
 
 import com.calendar.CalendarApplication.dtos.event.GetEventsDto;
 import com.calendar.CalendarApplication.dtos.user.*;
+import com.calendar.CalendarApplication.entity.Notification;
 import com.calendar.CalendarApplication.entity.User;
 import com.calendar.CalendarApplication.interfaces.user.UserControllerInterface;
 import com.calendar.CalendarApplication.repository.UserRepository;
 import com.calendar.CalendarApplication.services.EventService;
+import com.calendar.CalendarApplication.services.NotificationService;
 import com.calendar.CalendarApplication.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +27,14 @@ public class UserController implements UserControllerInterface {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private EventService eventService;
+    private NotificationService notificationService;
 
-    public UserController(UserService userService, JwtUtil jwtUtil, UserRepository userRepository, EventService eventService) {
+    public UserController(UserService userService, JwtUtil jwtUtil, UserRepository userRepository, EventService eventService, NotificationService notificationService) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
         this.eventService = eventService;
+        this.notificationService = notificationService;
     }
 
     @PostMapping("/register")
@@ -41,12 +45,15 @@ public class UserController implements UserControllerInterface {
             if (createdUser != null) {
                 UserResponseDto userResponse = new UserResponseDto(createdUser.getUsername(), createdUser.getEmail(), createdUser.getBirthDate());
 
+                Notification createdNotification = notificationService.newUserNotification(createdUser);
+
                 return ResponseEntity
                         .status(201)
                         .body(
                                 Map.of(
                                         "message", "Usuário criado com sucesso!",
-                                        "user", userResponse
+                                        "user", userResponse,
+                                        "notification", createdNotification
                                 )
                         );
             } else {
