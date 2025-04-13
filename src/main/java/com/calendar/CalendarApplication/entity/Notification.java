@@ -37,6 +37,10 @@ public class Notification {
 
     public Notification() {}
 
+    public long getId(){
+        return id;
+    }
+
     public String getTitle() {
         return title;
     }

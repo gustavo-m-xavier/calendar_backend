@@ -1,5 +1,6 @@
 package com.calendar.CalendarApplication.services;
 
+import com.calendar.CalendarApplication.dtos.notification.NotificationToUpdateDto;
 import com.calendar.CalendarApplication.entity.Event;
 import com.calendar.CalendarApplication.entity.Notification;
 import com.calendar.CalendarApplication.entity.User;
@@ -42,5 +43,15 @@ public class NotificationService implements NotificationServiceInterface {
 
         return savedNotification;
     };
+
+    public Notification updateNotification(NotificationToUpdateDto notification){
+        var savedNotification = notificationRepository.findById(notification.id());
+
+        savedNotification.setTitle(notification.title());
+        savedNotification.setDescription(notification.description());
+        savedNotification.setHasSeen(notification.hasSeen());
+
+        return notificationRepository.save(savedNotification);
+    }
 
 }
