@@ -69,7 +69,7 @@ public class Notification {
         this.user = userId;
     }
 
-    public boolean isHasSeen() {
+    public boolean getHasSeen() {
         return hasSeen;
     }
 
