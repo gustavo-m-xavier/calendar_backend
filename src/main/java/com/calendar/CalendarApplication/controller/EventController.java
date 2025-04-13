@@ -3,10 +3,13 @@ package com.calendar.CalendarApplication.controller;
 import com.calendar.CalendarApplication.dtos.event.CreateEventDto;
 import com.calendar.CalendarApplication.dtos.event.GetEventsDto;
 import com.calendar.CalendarApplication.dtos.event.UpdateEventDto;
+import com.calendar.CalendarApplication.dtos.notification.NotificationResponseDto;
+import com.calendar.CalendarApplication.entity.Notification;
 import com.calendar.CalendarApplication.interfaces.event.EventControllerInterface;
 import com.calendar.CalendarApplication.repository.EventRepository;
 import com.calendar.CalendarApplication.repository.UserRepository;
 import com.calendar.CalendarApplication.services.EventService;
+import com.calendar.CalendarApplication.services.NotificationService;
 import com.calendar.CalendarApplication.utils.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +26,20 @@ public class EventController implements EventControllerInterface {
     private JwtUtil jwtUtil;
     private EventService eventService;
     private EventRepository eventRepository;
+    private NotificationService notificationService;
 
-    public EventController(JwtUtil jwtUtil, EventService eventService, EventRepository eventRepository, UserRepository userRepository) {
+    public EventController(
+            JwtUtil jwtUtil,
+            EventService eventService,
+            EventRepository eventRepository,
+            UserRepository userRepository,
+            NotificationService notificationService
+    ) {
         this.eventRepository = eventRepository;
         this.eventService = eventService;
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
     }
 
     @PostMapping("/create")
@@ -57,12 +68,20 @@ public class EventController implements EventControllerInterface {
             var createdEvent = eventService.createEvent(eventDto, user.get());
 
             if(createdEvent != null) {
+
+                Notification createdNotification = notificationService.newEventNotification(user.get(), createdEvent);
+                NotificationResponseDto notificationResponse = new NotificationResponseDto(
+                        createdNotification.getTitle(),
+                        createdNotification.getDescription(),
+                        createdNotification.getHasSeen());
+
                 return ResponseEntity
                         .status(201)
                         .body(
                                 Map.of(
                                         "message", "Evento criado com sucesso!",
-                                        "evento:", createdEvent
+                                        "evento:", createdEvent,
+                                        "notification", notificationResponse
                                 )
                         );
             } else {
