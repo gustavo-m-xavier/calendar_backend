@@ -1,9 +1,9 @@
 package com.calendar.CalendarApplication.controller;
 
+import com.calendar.CalendarApplication.dtos.notification.NotificationResponseDto;
 import com.calendar.CalendarApplication.dtos.notification.NotificationToUpdateDto;
 import com.calendar.CalendarApplication.interfaces.notification.NotificationControllerInterface;
 import com.calendar.CalendarApplication.repository.NotificationRepository;
-import com.calendar.CalendarApplication.repository.UserRepository;
 import com.calendar.CalendarApplication.services.NotificationService;
 import com.calendar.CalendarApplication.utils.JwtUtil;
 import org.springframework.http.HttpStatus;
@@ -59,12 +59,18 @@ public class NotificationController implements NotificationControllerInterface {
             var notificationUpdated = notificationService.updateNotification(notificationToUpdateDto);
 
             if(notificationUpdated != null) {
+
+                NotificationResponseDto notificationResponse = new NotificationResponseDto(
+                        notificationUpdated.getTitle(),
+                        notificationUpdated.getDescription(),
+                        notificationUpdated.getHasSeen());
+
                 return ResponseEntity
                         .status(200)
                         .body(
                                 Map.of(
                                         "Message", "Notificação atualizada com sucesso!",
-                                        "notificação:", notificationUpdated
+                                        "notificação:", notificationResponse
                                 )
                         );
             } else {
