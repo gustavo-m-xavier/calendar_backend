@@ -9,22 +9,22 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 public interface EventControllerInterface {
 
-    public ResponseEntity<?> createEvent(
+    ResponseEntity<?> createEvent(
             @RequestBody CreateEventDto createEventDto,
             @RequestHeader("Authorization") String token
     );
 
-    public ResponseEntity<?> getEvent(
+    ResponseEntity<?> getEvent(
             @PathVariable long userId,
             @RequestHeader("Authorization") String token
     );
 
-    public ResponseEntity<?> updateEvent(
+    ResponseEntity<?> updateEvent(
             @RequestBody UpdateEventDto updateEventDto,
             @RequestHeader("Authorization") String token
     );
 
-    public ResponseEntity<?> deleteEvent(
+    ResponseEntity<?> deleteEvent(
             @PathVariable long id,
             @RequestHeader("Authorization") String token
     );

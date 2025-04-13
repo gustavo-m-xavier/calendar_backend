@@ -7,9 +7,9 @@ import com.calendar.CalendarApplication.entity.User;
 import java.util.Optional;
 
 public interface UserServiceInterface {
-    public User createUser(UserDto userDto);
-    public Optional<User> getUser(String email, String password);
-    public String authenticateUser(String email, String password);
-    public User updateUser(UpdateUserDto user);
-    public String deleteUser(int id);
+    User createUser(UserDto userDto);
+    Optional<User> getUser(String email, String password);
+    String authenticateUser(String email, String password);
+    User updateUser(UpdateUserDto user);
+    String deleteUser(int id);
 }
