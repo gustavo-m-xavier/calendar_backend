@@ -96,10 +96,4 @@ public class NotificationController implements NotificationControllerInterface {
                     );
         }
     }
-
-    @MessageMapping("/sendNotification")
-    @SendTo("/topic/notifications")
-    public NotificationResponseDto sendNotification(NotificationResponseDto notificationResponseDto) {
-        return notificationResponseDto;
-    }
 }
