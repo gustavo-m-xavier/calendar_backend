@@ -10,4 +10,5 @@ public interface NotificationServiceInterface {
     Notification newUserNotification(User user);
     Notification newEventNotification(User user, Event event);
     Notification updateNotification(NotificationToUpdateDto notification);
+    void sendNotificationToClients(Notification notification);
 }
