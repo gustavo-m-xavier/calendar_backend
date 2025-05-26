@@ -5,6 +5,9 @@ import com.calendar.CalendarApplication.entity.Event;
 import com.calendar.CalendarApplication.entity.Notification;
 import com.calendar.CalendarApplication.entity.User;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 public interface NotificationServiceInterface {
 
     Notification newUserNotification(User user);

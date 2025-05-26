@@ -13,5 +13,4 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     Notification findById(long id);
     @Query("SELECT n.user FROM Notification n WHERE n.id = :notificationId")
     User findUserByNotificationId(@Param("notificationId") long notificationId);
-    List<Notification> findByTimestampBetween(LocalDateTime start, LocalDateTime end);
 }

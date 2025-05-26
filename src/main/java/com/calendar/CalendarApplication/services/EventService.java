@@ -11,6 +11,8 @@ import com.calendar.CalendarApplication.repository.UserRepository;
 import com.calendar.CalendarApplication.utils.JwtUtil;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,6 +72,14 @@ public class EventService implements EventServiceInterface {
 
     public void deleteEvent(Event event){
         eventRepository.delete(event);
+    }
+
+    public List<Event> getNearestEvents(Date startDate, Date endDate){
+        List<Event> events = eventRepository.findByTimestampBetween(startDate, endDate);
+
+        events.sort(Comparator.comparing(e -> e.getDate()));
+
+        return events;
     }
 
 }
