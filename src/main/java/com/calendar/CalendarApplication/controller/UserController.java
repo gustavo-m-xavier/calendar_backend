@@ -47,7 +47,7 @@ public class UserController implements UserControllerInterface {
 
                 Notification createdNotification = notificationService.newUserNotification(createdUser);
 
-                notificationService.sendNotificationToClients(createdNotification);
+                notificationService.sendNotificationToUser(createdNotification, Optional.of(createdUser));
 
                 return ResponseEntity
                         .status(201)

@@ -70,7 +70,7 @@ public class EventController implements EventControllerInterface {
 
                 Notification createdNotification = notificationService.newEventNotification(user.get(), createdEvent);
 
-                notificationService.sendNotificationToClients(createdNotification);
+                notificationService.sendNotificationToUser(createdNotification, user);
 
                 return ResponseEntity
                         .status(201)
