@@ -5,8 +5,7 @@ import com.calendar.CalendarApplication.entity.Event;
 import com.calendar.CalendarApplication.entity.Notification;
 import com.calendar.CalendarApplication.entity.User;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Optional;
 
 public interface NotificationServiceInterface {
 
@@ -14,4 +13,5 @@ public interface NotificationServiceInterface {
     Notification newEventNotification(User user, Event event);
     Notification updateNotification(NotificationToUpdateDto notification);
     void sendNotificationToClients(Notification notification);
+    void sendDueDateNotification(Event event, int hourTo, Optional<User> user);
 }

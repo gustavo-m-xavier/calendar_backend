@@ -1,16 +1,16 @@
 package com.calendar.CalendarApplication.scheduling;
 
 import com.calendar.CalendarApplication.entity.Event;
+import com.calendar.CalendarApplication.entity.User;
 import com.calendar.CalendarApplication.services.EventService;
+import com.calendar.CalendarApplication.services.NotificationService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Component
 public class ScheduledTasks {
@@ -19,47 +19,41 @@ public class ScheduledTasks {
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
     private final EventService eventService;
+    private final NotificationService notificationService;
 
-    public ScheduledTasks(EventService eventService) {
+    public ScheduledTasks(EventService eventService, NotificationService notificationService) {
         this.eventService = eventService;
+        this.notificationService = notificationService;
     }
 
-    //shoud be 86400000
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRate = 86400000)
     public void dailyDueDateTask() {
-        logger.info("Verificando eventos: " + dateFormat.format(new Date()));
-
-        Date now = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(now);
-        calendar.add(Calendar.HOUR, 24);
-        Date nextDay = calendar.getTime();
-
-        List<Event> upcomingEvents = eventService.getNearestEvents(now, nextDay);
-
-        // must have logic to generate new notification and return it to websocket
-        upcomingEvents.forEach(event ->
-                logger.info("Evento próximo: " + event.getTitle())
-        );
+        processDueDateTask(24);
     }
 
-    //shoud be 3600000
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRate = 3600000)
     public void hourlyDueDateTask() {
-        logger.info("Verificando eventos: " + dateFormat.format(new Date()));
+        processDueDateTask(1);
+    }
+
+    private void processDueDateTask(int hoursAhead) {
+        logger.info("Verificando eventos para as próximas " + hoursAhead + " horas: " + dateFormat.format(new Date()));
 
         Date now = new Date();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(now);
-        calendar.add(Calendar.HOUR, 24);
-        Date nextDay = calendar.getTime();
+        calendar.add(Calendar.HOUR, hoursAhead);
+        Date futureTime = calendar.getTime();
 
-        List<Event> upcomingEvents = eventService.getNearestEvents(now, nextDay);
+        List<Event> upcomingEvents = eventService.getNearestEvents(now, futureTime);
 
-        // must have logic to generate new notification and return it to websocket
-        upcomingEvents.forEach(event ->
-                logger.info("Evento próximo: " + event.getTitle())
-        );
+        Map<User, List<Event>> eventosPorUsuario = upcomingEvents.stream()
+                .collect(Collectors.groupingBy(Event::getUser));
+
+        eventosPorUsuario.forEach((user, eventos) -> {
+            eventos.forEach(event -> notificationService.sendDueDateNotification(event, hoursAhead, Optional.ofNullable(user)));
+        });
     }
+
 
 }
