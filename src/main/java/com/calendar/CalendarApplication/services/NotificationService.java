@@ -10,11 +10,6 @@ import com.calendar.CalendarApplication.repository.NotificationRepository;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.util.Comparator;
-import java.util.List;
-
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -63,6 +58,7 @@ public class NotificationService implements NotificationServiceInterface {
         return notificationRepository.save(savedNotification);
     }
 
+    //notification for all users
     public void sendNotificationToClients(Notification notification) {
         var dto = new NotificationResponseDto(
                 notification.getTitle(),
@@ -71,6 +67,36 @@ public class NotificationService implements NotificationServiceInterface {
         );
 
         messagingTemplate.convertAndSend("/topic/notifications", dto);
+    }
+
+    //notification to specific user
+    public void sendNotificationToUser(Notification notification, Optional<User> user) {
+        var dto = new NotificationResponseDto(
+                notification.getTitle(),
+                notification.getDescription(),
+                notification.getHasSeen()
+        );
+
+        messagingTemplate.convertAndSendToUser(user.get().getUsername(), "/queue/notifications", dto);
+    }
+
+
+
+    public void sendDueDateNotification(Event event, int hourTo, Optional<User> user) {
+        String description;
+
+        if (hourTo == 1) {
+            description = "Seu evento \"" + event.getTitle() + "\" está previsto para a próxima hora.";
+        } else {
+            description = "Seu evento \"" + event.getTitle() + "\" está previsto para daqui a um dia.";
+        }
+
+        Notification notification = new Notification();
+        notification.setTitle("Seu evento \"" + event.getTitle() + "\" está próximo!");
+        notification.setDescription(description);
+        notification.setHasSeen(false);
+
+        sendNotificationToUser(notification, user);
     }
 
 }

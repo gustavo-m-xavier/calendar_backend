@@ -75,7 +75,7 @@ public class EventService implements EventServiceInterface {
     }
 
     public List<Event> getNearestEvents(Date startDate, Date endDate){
-        List<Event> events = eventRepository.findByTimestampBetween(startDate, endDate);
+        List<Event> events = eventRepository.findByDateBetween(startDate, endDate);
 
         events.sort(Comparator.comparing(e -> e.getDate()));
 
