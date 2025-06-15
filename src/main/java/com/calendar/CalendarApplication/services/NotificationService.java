@@ -1,11 +1,13 @@
 package com.calendar.CalendarApplication.services;
 
+import com.calendar.CalendarApplication.dtos.notification.NotificationResponseDto;
 import com.calendar.CalendarApplication.dtos.notification.NotificationToUpdateDto;
 import com.calendar.CalendarApplication.entity.Event;
 import com.calendar.CalendarApplication.entity.Notification;
 import com.calendar.CalendarApplication.entity.User;
 import com.calendar.CalendarApplication.interfaces.notification.NotificationServiceInterface;
 import com.calendar.CalendarApplication.repository.NotificationRepository;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -14,9 +16,11 @@ import java.util.Optional;
 public class NotificationService implements NotificationServiceInterface {
 
     private NotificationRepository notificationRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    public NotificationService(NotificationRepository notificationRepository) {
+    public NotificationService(NotificationRepository notificationRepository, SimpMessagingTemplate messagingTemplate) {
         this.notificationRepository = notificationRepository;
+        this.messagingTemplate = messagingTemplate;
     }
 
     public Notification newUserNotification(User user){
@@ -52,6 +56,47 @@ public class NotificationService implements NotificationServiceInterface {
         savedNotification.setHasSeen(notification.hasSeen());
 
         return notificationRepository.save(savedNotification);
+    }
+
+    //notification for all users
+    public void sendNotificationToClients(Notification notification) {
+        var dto = new NotificationResponseDto(
+                notification.getTitle(),
+                notification.getDescription(),
+                notification.getHasSeen()
+        );
+
+        messagingTemplate.convertAndSend("/topic/notifications", dto);
+    }
+
+    //notification to specific user
+    public void sendNotificationToUser(Notification notification, Optional<User> user) {
+        var dto = new NotificationResponseDto(
+                notification.getTitle(),
+                notification.getDescription(),
+                notification.getHasSeen()
+        );
+
+        messagingTemplate.convertAndSendToUser(user.get().getUsername(), "/queue/notifications", dto);
+    }
+
+
+
+    public void sendDueDateNotification(Event event, int hourTo, Optional<User> user) {
+        String description;
+
+        if (hourTo == 1) {
+            description = "Seu evento \"" + event.getTitle() + "\" está previsto para a próxima hora.";
+        } else {
+            description = "Seu evento \"" + event.getTitle() + "\" está previsto para daqui a um dia.";
+        }
+
+        Notification notification = new Notification();
+        notification.setTitle("Seu evento \"" + event.getTitle() + "\" está próximo!");
+        notification.setDescription(description);
+        notification.setHasSeen(false);
+
+        sendNotificationToUser(notification, user);
     }
 
 }

@@ -6,6 +6,7 @@ import com.calendar.CalendarApplication.dtos.event.UpdateEventDto;
 import com.calendar.CalendarApplication.entity.Event;
 import com.calendar.CalendarApplication.entity.User;
 
+import java.util.Date;
 import java.util.List;
 
 public interface EventServiceInterface {
@@ -14,4 +15,5 @@ public interface EventServiceInterface {
     List<GetEventsDto> findEventsByUserId(long userId);
     Event updateEvent(UpdateEventDto eventToUpdate);
     void deleteEvent(Event event);
+    List<Event> getNearestEvents(Date startDate, Date endDate);
 }

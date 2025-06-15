@@ -1,7 +1,6 @@
 package com.calendar.CalendarApplication.controller;
 
 import com.calendar.CalendarApplication.dtos.event.GetEventsDto;
-import com.calendar.CalendarApplication.dtos.notification.NotificationResponseDto;
 import com.calendar.CalendarApplication.dtos.user.*;
 import com.calendar.CalendarApplication.entity.Notification;
 import com.calendar.CalendarApplication.entity.User;
@@ -47,18 +46,15 @@ public class UserController implements UserControllerInterface {
                 UserResponseDto userResponse = new UserResponseDto(createdUser.getUsername(), createdUser.getEmail(), createdUser.getBirthDate());
 
                 Notification createdNotification = notificationService.newUserNotification(createdUser);
-                NotificationResponseDto notificationResponse = new NotificationResponseDto(
-                        createdNotification.getTitle(),
-                        createdNotification.getDescription(),
-                        createdNotification.getHasSeen());
+
+                notificationService.sendNotificationToUser(createdNotification, Optional.of(createdUser));
 
                 return ResponseEntity
                         .status(201)
                         .body(
                                 Map.of(
                                         "message", "Usuário criado com sucesso!",
-                                        "user", userResponse,
-                                        "notification", notificationResponse
+                                        "user", userResponse
                                 )
                         );
             } else {
