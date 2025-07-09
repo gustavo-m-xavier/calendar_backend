@@ -1,4 +1,6 @@
 package com.calendar.CalendarApplication.dtos.user;
 
-public record UserResponseDto(String username, String email, java.util.Date birthDate) {
+import java.time.LocalDate;
+
+public record UserResponseDto(String username, String email, LocalDate birthDate) {
 }

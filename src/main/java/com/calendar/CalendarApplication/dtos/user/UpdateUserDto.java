@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public record UpdateUserDto(
@@ -20,5 +21,5 @@ public record UpdateUserDto(
         @NotEmpty String password,
 
         @NotNull
-        @NotEmpty Date birthDate
+        @NotEmpty LocalDate birthDate
 ) {}

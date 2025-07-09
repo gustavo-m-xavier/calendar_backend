@@ -9,6 +9,7 @@ import com.calendar.CalendarApplication.repository.UserRepository;
 import com.calendar.CalendarApplication.services.EventService;
 import com.calendar.CalendarApplication.services.NotificationService;
 import com.calendar.CalendarApplication.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +39,7 @@ public class UserController implements UserControllerInterface {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> createUser(@RequestBody UserDto user) {
+    public ResponseEntity<?> createUser(@RequestBody @Valid UserDto user) {
         try {
             var createdUser = userService.createUser(user);
 

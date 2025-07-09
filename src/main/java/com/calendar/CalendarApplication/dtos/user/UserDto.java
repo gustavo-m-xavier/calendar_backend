@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public record UserDto(
@@ -18,7 +19,7 @@ public record UserDto(
         @NotEmpty String password,
 
         @NotNull
-        @NotEmpty Date birth_date
+        @NotEmpty LocalDate birth_date
 ) {
 
     @Override
@@ -37,7 +38,7 @@ public record UserDto(
     }
 
     @Override
-    public Date birth_date() {
+    public LocalDate birth_date() {
         return birth_date;
     }
 }
