@@ -2,11 +2,14 @@ package com.calendar.CalendarApplication.entity;
 
 import jakarta.persistence.*;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -27,7 +30,7 @@ public class User {
     private String password;
 
     @Column(name = "birth_date")
-    private Date birthDate;
+    private LocalDate birthDate;
 
     @CreationTimestamp
     private Instant created_at;
@@ -35,7 +38,7 @@ public class User {
     @UpdateTimestamp
     private Instant updated_at;
 
-    public User(String username, String email, String password, Date birthDate) {
+    public User(String username, String email, String password, LocalDate birthDate) {
         this.username = username;
         this.email = email;
         this.password = password;
@@ -56,7 +59,7 @@ public class User {
         return password;
     }
 
-    public Date getBirthDate() {
+    public LocalDate getBirthDate() {
         return birthDate;
     }
 
@@ -72,7 +75,7 @@ public class User {
         this.password = password;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(@NotNull @NotEmpty LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 
