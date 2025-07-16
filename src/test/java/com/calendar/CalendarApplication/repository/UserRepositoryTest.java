@@ -13,16 +13,4 @@ class UserRepositoryTest {
     @Test
     void findByEmail() {
     }
-
-    @Test
-    void existsByUsername() {
-    }
-
-    @Test
-    void existsByEmail() {
-    }
-
-    @Test
-    void findById() {
-    }
 }
