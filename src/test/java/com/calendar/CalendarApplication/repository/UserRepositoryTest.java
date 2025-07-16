@@ -41,6 +41,16 @@ class UserRepositoryTest {
 
     }
 
+    @Test
+    @DisplayName("Should not return user successfully")
+    void findByEmailCase2() {
+
+        Optional<User> user = userRepository.findByEmail("gustavo@gmail.com");
+
+        assertTrue(user.isEmpty());
+
+    }
+
     private User createUser(UserDto userDto) {
         User user = new User(userDto.username(), userDto.email(), userDto.password(), userDto.birth_date());
 
